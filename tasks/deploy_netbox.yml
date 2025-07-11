@@ -291,7 +291,7 @@
 
 - name: Build the local documentation
   shell:
-    cmd: "{{ netbox_virtualenv_path }}/bin/mkdocs build"
+    cmd: "sudo {{ netbox_virtualenv_path }}/bin/mkdocs build"
     chdir: "{{ netbox_current_path }}"
   when:
     - netbox_stable and netbox_stable_version is version('3.0.0', '>=')
