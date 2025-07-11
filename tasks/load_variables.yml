@@ -39,6 +39,10 @@
       - "{{ 'django-storages' if _netbox_storages_module is defined else [] }}"
       - "{{ _netbox_storages_map[_netbox_storages_module] if _netbox_storages_module is defined else [] }}"
       - "{{ netbox_pip_packages }}"
+  
+- name: Debug dependencies 
+  debug:
+    msg: "_netbox_python_deps = {{ _netbox_python_deps }}\nnetbox_pip_packages = {{ netbox_pip_packages }}"
 
 - name: Flatten that list of dependencies
   set_fact:
