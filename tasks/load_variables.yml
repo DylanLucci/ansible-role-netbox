@@ -39,10 +39,6 @@
       - "{{ 'django-storages' if _netbox_storages_module is defined else [] }}"
       - "{{ _netbox_storages_map[_netbox_storages_module] if _netbox_storages_module is defined else [] }}"
       - "{{ netbox_pip_packages }}"
-
-- name: Where is this role coming from?
-  debug:
-    msg: "role_path = {{ role_path }}"
   
 - name: Debug dependencies 
   debug:
