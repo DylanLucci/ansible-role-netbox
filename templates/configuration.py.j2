@@ -100,14 +100,21 @@ REDIS = {
 METRICS_ENABLED = True
 {% endif %}
 
+{% set _pretty_keys = ['CUSTOM_VALIDATORS', 'SOCIAL_AUTH_PIPELINE'] %}
+
 {% for setting, value in _netbox_config.items() %}
-{%      if value in [True, False] %}
+{%      if setting in _pretty_keys %}
+{%      elif value in [True, False] %}
 {{ setting }} = {{ 'True' if value else 'False' }}
 {%      elif value is string or value is number %}
-{{ setting }} = {{ value }}
+{{ setting }} = {{ value | to_nice_json }}
 {%      else %}
 {{ setting }} = {{ value | to_json(indent=4) }}
 {%      endif %}
+{% endfor %}
+
+{% for key in _pretty_keys if key in _netbox_config %}
+{{ key }} = {{ '\n' ~ _netbox_config[key] | trim | indent(4, True) | safe }}
 {% endfor %}
 
 # vim: ft=python
