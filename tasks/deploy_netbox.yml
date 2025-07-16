@@ -189,7 +189,7 @@
     - name: Symlink/Remove NetBox custom_validators files into/from the active NetBox release
       ansible.builtin.file:
         # Omitting the src attribute is necessary when state: absent
-        src: "{{ netbox_shared_path + '/' + {{ item }} if netbox_custom_validators_files is defined else omit }}"
+        src: "{{ (netbox_shared_path ~ '/' ~ item) if netbox_custom_validators_files is defined else omit }}"
         dest: "{{ netbox_current_path }}/netbox/{{ item }}"
         owner: "{{ netbox_user }}"
         group: "{{ netbox_group }}"
