@@ -174,8 +174,26 @@
         mode: 0640
         state: "{{ 'link' if netbox_local_settings_file is defined else 'absent' }}"
 
-    # custom_validators.py
-    - name: Copy NetBox custom_validators files into shared (ignore if it doesn't exist)
+    # custom_validators
+    - name: Remove custom_validators files from shared 
+      ansible.builtin.file:
+        # Omitting the src attribute is necessary when state: absent
+        dest: "{{ netbox_shared_path }}/{{ item }}"
+        state: "absent"
+      loop: "{{ netbox_custom_validators_files_remove }}"
+      when:
+        - netbox_custom_validators_files_remove is defined
+
+    - name: Remove Symlink NetBox custom_validators files from the active NetBox release 
+      ansible.builtin.file:
+        # Omitting the src attribute is necessary when state: absent
+        dest: "{{ netbox_current_path }}/netbox/{{ item }}"
+        state: "absent"
+      loop: "{{ netbox_custom_validators_files_remove }}"
+      when:
+        - netbox_custom_validators_files_remove is defined
+
+    - name: Copy NetBox custom_validators files into shared 
       ansible.builtin.copy:
         src: "{{ item }}"
         dest: "{{ netbox_shared_path }}/{{ item }}"
@@ -186,16 +204,60 @@
       when:
         - netbox_custom_validators_files is defined
 
-    - name: Symlink/Remove NetBox custom_validators files into/from the active NetBox release
-      ansible.builtin.file:
-        # Omitting the src attribute is necessary when state: absent
-        src: "{{ (netbox_shared_path ~ '/' ~ item) if netbox_custom_validators_files is defined else omit }}"
+    - name: Symlink NetBox custom_validators files into the active NetBox release 
+      ansible.builtin.file: 
+        src: "{{ (netbox_shared_path }}/{{ item }}"
         dest: "{{ netbox_current_path }}/netbox/{{ item }}"
         owner: "{{ netbox_user }}"
         group: "{{ netbox_group }}"
         mode: 0640
-        state: "{{ 'link' if netbox_custom_validators_files is defined else 'absent' }}"
+        state: "link"
       loop: "{{ netbox_custom_validators_files }}"
+      when:
+        - netbox_custom_validators_files is defined
+
+
+    # custom_pipelines for python social auth
+    - name: Remove custom_validators files from shared 
+      ansible.builtin.file:
+        # Omitting the src attribute is necessary when state: absent
+        dest: "{{ netbox_shared_path }}/{{ item }}"
+        state: "absent"
+      loop: "{{ netbox_custom_pipeline_files }}"
+      when:
+        - netbox_custom_pipeline_files is defined
+
+    - name: Remove Symlink NetBox custom_validators files from the active NetBox release 
+      ansible.builtin.file:
+        # Omitting the src attribute is necessary when state: absent
+        dest: "{{ netbox_config_path }}/{{ item }}"
+        state: "absent"
+      loop: "{{ netbox_custom_pipeline_files }}"
+      when:
+        - netbox_custom_pipeline_files is defined
+
+    - name: Copy NetBox custom_pipelines files into shared 
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: "{{ netbox_shared_path }}/{{ item }}"
+        owner: "{{ netbox_user }}"
+        group: "{{ netbox_group }}"
+        mode: 0640
+      loop: "{{ netbox_custom_pipeline_files }}"
+      when:
+        - netbox_custom_pipeline_files is defined
+
+    - name: Symlink NetBox custom_pipelines files into the active NetBox release
+      ansible.builtin.file:
+        # Omitting the src attribute is necessary when state: absent
+        src: "{{ netbox_shared_path }}/{{ item }}"
+        dest: "{{ netbox_config_path }}/{{ item }}"
+        owner: "{{ netbox_user }}"
+        group: "{{ netbox_group }}"
+        mode: 0640
+        state: "link"
+      loop: "{{ netbox_custom_pipelines_files }}"
+
   notify:
     - reload netbox.service
 

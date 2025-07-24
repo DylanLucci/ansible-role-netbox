@@ -77,8 +77,18 @@ netbox_ldap_enabled: false
 netbox_ldap_config_template: netbox_ldap_config.py.j2
 
 # netbox_local_settings_file: "{{ playbook_dir }}/files/netbox/local_settings.py"
+## Custom Validators
 # netbox_custom_validators_files:
 #   - custom_validators.py
+## If you've added custom validators files and explictly need to remove them do so here
+# netbox_custom_validators_files_remove:
+#   - custom_validators.py
+## Custom Pipelines
+# netbox_custom_pipelines_files:
+#   - custom_pipeline.py
+## If you've added custom pipeline files and explictly need to remove them do so here
+# netbox_custom_pipelines_files:
+#   - custom_pipeline.py
 
 netbox_napalm_enabled: false
 netbox_napalm_packages:
